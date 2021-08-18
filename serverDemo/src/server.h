@@ -1,28 +1,35 @@
+#ifndef SERVER_H
+#define SERVER_H
+
+#include <QObject>
+#include <QDebug>
 #include <QTcpServer>
 #include <QTcpSocket>
-#include <deque>
-#include <mutex>
-#include <QObject>
-#include <iostream>
-#include <queue>
+#include <QHash>
+#include <QHashIterator>
+#include <QString>
+#include <QMutex>
 #include "user.h"
-#include "manager.h"
 
 class server : public QObject
 {
-
+    Q_OBJECT
 public:
-    server();
-    ~server() = default;
+    explicit server(QObject *parent = 0);
+    void run_server(QHostAddress address, int port);
 
 signals:
 
 public slots:
-
     void new_connection();
+    void closed_connection();
+    void read_waiting_socket();
 
 private:
     QTcpServer *m_server;
-    manager *m_manager;
-
+    QHash<QTcpSocket*, user*> clients_list;
+    QHash<QTcpSocket*, user*>::iterator i;
+    QMutex mutex;
 };
+
+#endif // SERVER_H

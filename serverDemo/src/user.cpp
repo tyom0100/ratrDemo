@@ -1,31 +1,21 @@
 #include "user.h"
 
-user::user(QTcpSocket *socket, QObject *parent) :
+user::user(QObject *parent) :
     QObject(parent)
 {
-    m_socket = socket;
-    sock_desc = socket->socketDescriptor();
 }
 
-user::user(const user &us)
+void user::write(QString msg)
 {
-    this->m_socket = us.m_socket;
-    this->sock_desc = us.sock_desc;
+    socket->write(msg.toLocal8Bit().constData());
+    socket->flush();
 }
 
-QTcpSocket *user::socket()
+QString user::read()
 {
-    return this->m_socket;
-}
-
-
-
-void user::write(QByteArray msg)
-{
-    this->m_socket->write(msg);
-}
-
-user::~user()
-{
-
+    while (socket->bytesAvailable())
+    {
+        temp = socket->readAll();
+    }
+    return temp;
 }

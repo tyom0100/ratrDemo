@@ -2,22 +2,26 @@
 #define USER_H
 
 #include <QObject>
-#include <QString>
 #include <QTcpSocket>
+#include <QDebug>
 
 class user : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-    user(QTcpSocket *socket, QObject *parent = nullptr);
-    user(const user &us);
-    QTcpSocket *socket();
-    void write(QByteArray msg);
-    ~user();
+    explicit user(QObject *parent = 0);
+
+    QTcpSocket *socket;
+
+    void write(QString msg);
+    QString read();
+
+signals:
+
+public slots:
 
 private:
-    QTcpSocket *m_socket;
-    qint16 sock_desc;
+    QString temp;
 
 };
 
