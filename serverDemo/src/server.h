@@ -9,13 +9,14 @@
 #include <QHashIterator>
 #include <QString>
 #include <QMutex>
-#include "user.h"
+#include "manager.h"
 
 class server : public QObject
 {
     Q_OBJECT
 public:
     explicit server(QObject *parent = 0);
+    ~server();
     void run_server(QHostAddress address, int port);
 
 signals:
@@ -23,13 +24,22 @@ signals:
 public slots:
     void new_connection();
     void closed_connection();
-    void read_waiting_socket();
+    void read();
+
+protected:
+    void distribute_emit_result(const short&,const QByteArray &);
 
 private:
+
+    uint uid;
+
+    manager *master;
     QTcpServer *m_server;
+    QList <QTcpSocket*> online_clients;
     QHash<QTcpSocket*, user*> clients_list;
     QHash<QTcpSocket*, user*>::iterator i;
-    QMutex mutex;
+
 };
 
 #endif // SERVER_H
+
